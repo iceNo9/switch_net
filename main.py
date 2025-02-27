@@ -19,11 +19,22 @@ def switch_wifi(target_ssid):
     print(f"正在切换到 Wi-Fi 网络: {target_ssid}")
     subprocess.run(['netsh', 'wlan', 'connect', 'name=' + target_ssid])
 
-    # 如果切换到 RD-TEST_5G_02，自动打开网页
-    if target_ssid == "RD-TEST_5G_02":
-        print("切换到 RD-TEST_5G_02，正在打开网页...")
-        time.sleep(1)  # 等待网络连接完成
-        webbrowser.open("https://10.10.133.253/UniExServices/user/toLogin.html")
+    # 检查是否连接成功
+    for attempt in range(5):  # 最多尝试 5 次 (5 秒)
+        current_ssid = get_current_ssid()
+        if current_ssid == target_ssid:
+            print(f"成功切换到 {target_ssid} 网络！")
+            # 如果切换到 RD-TEST_5G_02，自动打开网页
+            if target_ssid == "RD-TEST_5G_02":
+                print("切换到 RD-TEST_5G_02，正在打开网页...")
+                webbrowser.open("https://10.10.133.253/UniExServices/user/toLogin.html")
+            return  # 成功连接，退出函数
+        else:
+            print(f"当前连接的网络是: {current_ssid}，等待 {1} 秒后重试...")
+            time.sleep(1)
+
+    # 如果 5 秒内没有连接成功，输出超时消息
+    print(f"连接到 {target_ssid} 失败，超时！")
 
 def main():
     # 获取当前连接的 SSID
