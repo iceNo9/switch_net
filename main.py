@@ -1,4 +1,6 @@
 import subprocess
+import webbrowser
+import time
 
 def get_current_ssid():
     # 使用 subprocess 调用 netsh 命令来获取当前连接的 SSID
@@ -16,6 +18,12 @@ def switch_wifi(target_ssid):
     # 使用 netsh wlan connect 来切换到指定的网络
     print(f"正在切换到 Wi-Fi 网络: {target_ssid}")
     subprocess.run(['netsh', 'wlan', 'connect', 'name=' + target_ssid])
+
+    # 如果切换到 RD-TEST_5G_02，自动打开网页
+    if target_ssid == "RD-TEST_5G_02":
+        print("切换到 RD-TEST_5G_02，正在打开网页...")
+        time.sleep(1)  # 等待网络连接完成
+        webbrowser.open("https://10.10.133.253/UniExServices/user/toLogin.html")
 
 def main():
     # 获取当前连接的 SSID
